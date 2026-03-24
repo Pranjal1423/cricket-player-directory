@@ -66,6 +66,7 @@
   background: var(--accent-subtle);
 }
 
+/* ── HERO — desktop (side by side) ── */
 .detail-hero {
   position: relative;
   height: 440px;
@@ -205,8 +206,6 @@
   flex-direction: column;
   gap: 24px;
 }
-
-
 
 .career-section {
   background: var(--bg-card);
@@ -391,35 +390,100 @@
   font-size: 1rem;
 }
 
-@media (max-width: 1024px) {
-  .detail-content {
-    grid-template-columns: 260px 1fr;
+/* ── MOBILE/TABLET — image on top, content below ── */
+@media (max-width: 768px) {
+  .detail-hero {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .detail-hero-image {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    height: 380px;
+    object-fit: contain;
+    object-position: center top;
+    mask-image: none;
+    -webkit-mask-image: none;
+    padding-top: 16px;
+  }
+
+  .detail-hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin-left: 0;
+    height: auto;
     padding: 24px;
-    gap: 24px;
+    justify-content: flex-start;
+  }
+
+  .detail-body {
+    padding: 24px 16px;
+  }
+
+  .detail-header {
+    padding: 14px 16px;
+  }
+
+  .detail-header h1 {
+    font-size: 1.3rem;
   }
 }
 
+/* ── MOBILE (max 768px) — image on top, content below ── */
 @media (max-width: 768px) {
-  .detail-hero { height: 400px; }
-  .detail-hero-content { width: 100%; margin-left: 0; }
-  .detail-hero-image { opacity: 0.3; width: 100%; }
-  .stats-dashboard { grid-template-columns: repeat(3, 1fr); }
-  .detail-body { padding: 20px 16px; }
-  .detail-header { padding: 14px 16px; }
-  .detail-header h1 { font-size: 1.2rem; }
+  .detail-hero-image {
+    height: 320px;
+  }
+
+  .detail-hero-name {
+    font-size: 1.8rem;
+  }
+
+  .detail-hero-content {
+    padding: 16px;
+    gap: 8px;
+  }
+
+  .detail-body {
+    padding: 16px 12px;
+  }
+
+  .detail-header h1 {
+    font-size: 1.1rem;
+  }
+
+  .career-totals {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
+/* ── SMALL MOBILE (max 480px) ── */
 @media (max-width: 480px) {
-  .detail-hero { height: 360px; }
-  .stats-dashboard { grid-template-columns: repeat(2, 1fr); }
-  .detail-hero-name { font-size: 1.6rem; }
-  .career-totals { grid-template-columns: repeat(3, 1fr); }
+  .detail-hero-image {
+    height: 260px;
+  }
+
+  .detail-hero-name {
+    font-size: 1.5rem;
+  }
+
+  .career-totals {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
+/* ── LARGE DESKTOP ── */
 @media (min-width: 1440px) {
   .detail-hero-image {
     right: 18%;
   }
+
   .detail-hero-content {
     margin-left: 20%;
   }
