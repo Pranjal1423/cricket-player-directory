@@ -31,7 +31,7 @@ A React app that lets you browse and explore cricket players using the SportMonk
 - SportMonks Cricket API v2.0
 - ESLint + Prettier
 - CSS Variables for dark/light theming
-- lz-string — for compressing player data before storing in localStorage
+- IndexedDB — for persisting pruned player data across browser sessions
 
 ---
 
@@ -78,10 +78,20 @@ Opens at `http://localhost:3000`
 The app uses a three-layer caching strategy:
 
 1. **In-memory** — fastest, lasts for the current session
-2. **localStorage with lz-string compression** — persists across refreshes, expires after 24 hours
+2. **IndexedDB** — persists across refreshes, expires after 24 hours
 3. **API fetch** — only happens on first load or after cache expiry
 
-This means the slow initial load (22,000+ players) only happens once per day. Every refresh after that is instant.
+Before storing, the raw API response is **pruned** — only the fields actually used by the app are kept. This significantly reduces the size of cached data compared to storing the full response.
+
+This means the slow initial load (22,000+ players) only happens once per day per device. Every refresh after that is instant.
+
+---
+
+## Why IndexedDB over localStorage
+
+- **No size limit** — localStorage has a 5MB cap which is risky at 22,000+ players. IndexedDB has no practical limit
+- **Async** — IndexedDB is non-blocking so the UI stays responsive while reading/writing
+- **No compression library needed** — data pruning alone reduces size enough, so lz-string is not required
 
 ---
 
@@ -103,7 +113,7 @@ src/
 │   ├── PlayerDetailPage.js    detail page
 │   └── PlayerDetailPage.css
 ├── services/
-│   └── api.js                 API calls with caching
+│   └── api.js                 API calls with IndexedDB caching + data pruning
 ├── styles/
 │   └── theme.css              CSS variables for dark/light mode
 ├── App.js                     routing + theme state
@@ -133,5 +143,6 @@ Live URL: _to be added in PR description_
 
 ## Notes
 
-- The API returns all 22,000+ players in a single request — first load takes a few seconds. Every refresh after that is instant thanks to localStorage caching.
+- The API returns all 22,000+ players in a single request — first load takes a few seconds. Every refresh after that is instant thanks to IndexedDB caching.
+- Only the fields used by the app are stored in IndexedDB — unused fields from the API response are stripped before caching.
 - The API key is exposed in the browser network tab — this is a known limitation of client-side apps without a backend proxy.
