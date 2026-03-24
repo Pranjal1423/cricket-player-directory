@@ -20,6 +20,7 @@ A React app that lets you browse and explore cricket players using the SportMonk
 - Career stats broken down by tournament type (batting + bowling tables)
 - Stats aggregated across seasons of the same type
 - Back button preserves your filters from the listing page
+- On mobile — image stacks on top, content below (clean layout)
 
 ---
 
@@ -30,6 +31,7 @@ A React app that lets you browse and explore cricket players using the SportMonk
 - SportMonks Cricket API v2.0
 - ESLint + Prettier
 - CSS Variables for dark/light theming
+- lz-string — for compressing player data before storing in localStorage
 
 ---
 
@@ -71,9 +73,21 @@ Opens at `http://localhost:3000`
 
 ---
 
+## Caching
+
+The app uses a three-layer caching strategy:
+
+1. **In-memory** — fastest, lasts for the current session
+2. **localStorage with lz-string compression** — persists across refreshes, expires after 24 hours
+3. **API fetch** — only happens on first load or after cache expiry
+
+This means the slow initial load (22,000+ players) only happens once per day. Every refresh after that is instant.
+
+---
+
 ## API setup note
 
-The app proxies API requests through `setupProxy.js` (using `http-proxy-middleware`) to avoid CORS issues in development. This is only needed locally — Vercel handles it differently in production via environment variables.
+The app proxies API requests through `setupProxy.js` (using `http-proxy-middleware`) to avoid CORS issues in development. On Vercel, this is handled via `vercel.json` rewrites.
 
 ---
 
@@ -89,7 +103,7 @@ src/
 │   ├── PlayerDetailPage.js    detail page
 │   └── PlayerDetailPage.css
 ├── services/
-│   └── api.js                 API calls with in-memory caching
+│   └── api.js                 API calls with caching
 ├── styles/
 │   └── theme.css              CSS variables for dark/light mode
 ├── App.js                     routing + theme state
@@ -102,7 +116,7 @@ src/
 ## Linting and formatting
 
 ```bash
-npx eslint src/          # check for lint errors
+npx eslint src/           # check for lint errors
 npx prettier --check src/ # check formatting
 npx prettier --write src/ # auto-fix formatting
 ```
@@ -119,5 +133,5 @@ Live URL: _to be added in PR description_
 
 ## Notes
 
-- The API returns all 22,000+ players in a single request (no server-side pagination), so the first load takes a few seconds. Subsequent navigation is instant due to in-memory caching.
+- The API returns all 22,000+ players in a single request — first load takes a few seconds. Every refresh after that is instant thanks to localStorage caching.
 - The API key is exposed in the browser network tab — this is a known limitation of client-side apps without a backend proxy.
