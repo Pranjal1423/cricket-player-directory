@@ -1,3 +1,13 @@
+/**
+ * theme.css - Global Theme and CSS Variables
+ * 
+ * Defines the design system tokens for the directory application,
+ * including color palettes for both Dark and Light modes using CSS variables.
+ * Also sets up global typography and root resets.
+ * 
+ * @package CricketPlayerDirectory
+ */
+
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Lato:wght@300;400;700&display=swap');
 
 :root {

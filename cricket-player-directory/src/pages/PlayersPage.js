@@ -1,3 +1,12 @@
+/**
+ * PlayersPage.js - Cricket Players Listing Page
+ * 
+ * Displays a list of cricket players with search, filtering, and sorting capabilities.
+ * Implements pagination and a responsive grid layout.
+ * 
+ * @package CricketPlayerDirectory
+ */
+
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { fetchPlayers, fetchCountries } from '../services/api';
@@ -6,6 +15,14 @@ import './PlayersPage.css';
 
 const PLAYERS_PER_PAGE = 12;
 
+/**
+ * PlayersPage Component
+ * 
+ * @param {Object} props - Component props.
+ * @param {string} props.theme - Current theme ('dark' or 'light').
+ * @param {Function} props.toggleTheme - Function to toggle the application theme.
+ * @returns {JSX.Element} The rendered PlayersPage component.
+ */
 function PlayersPage({ theme, toggleTheme }) {
   const [players, setPlayers] = useState([]);
   const [countries, setCountries] = useState({});

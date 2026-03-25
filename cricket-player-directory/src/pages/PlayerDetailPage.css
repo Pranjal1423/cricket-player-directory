@@ -1,3 +1,12 @@
+/**
+ * PlayerDetailPage.css - Styles for the Player Detail Page
+ * 
+ * Provides styling for the hero section, career statistics tabs/tables,
+ * totals cards, and layout for the player detail view.
+ * 
+ * @package CricketPlayerDirectory
+ */
+
 .detail-page {
   min-height: 100vh;
   background: var(--page-bg);

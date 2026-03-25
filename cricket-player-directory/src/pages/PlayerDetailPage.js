@@ -1,8 +1,25 @@
+/**
+ * PlayerDetailPage.js - Detailed view for a specific Cricket Player
+ * 
+ * Fetches and displays detailed information about a player, including
+ * their formats performance, career statistics, and biographic details.
+ * 
+ * @package CricketPlayerDirectory
+ */
+
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchPlayerById } from '../services/api';
 import './PlayerDetailPage.css';
 
+/**
+ * PlayerDetailPage Component
+ * 
+ * @param {Object} props - Component props.
+ * @param {string} props.theme - Current theme ('dark' or 'light').
+ * @param {Function} props.toggleTheme - Function to toggle the application theme.
+ * @returns {JSX.Element} The rendered PlayerDetailPage component.
+ */
 function PlayerDetailPage({ theme, toggleTheme }) {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -29,6 +46,12 @@ function PlayerDetailPage({ theme, toggleTheme }) {
     loadPlayer();
   }, [id]);
 
+  /**
+   * Identifies unique tournament types (formats) from the career data.
+   * 
+   * @param {Array} career - The player's career records.
+   * @returns {Array} List of unique career record objects.
+   */
   const getUniqueTabs = (career) => {
     const seen = new Set();
     return career.filter((c) => {
@@ -38,9 +61,23 @@ function PlayerDetailPage({ theme, toggleTheme }) {
     });
   };
 
+  /**
+   * Filters career records by a specific tournament type.
+   * 
+   * @param {Array} career - The player's career records.
+   * @param {string} type - The tournament type to filter by.
+   * @returns {Array} Filtered career records.
+   */
   const getCareerByType = (career, type) =>
     career.filter((c) => c.type === type);
 
+  /**
+   * Aggregates statistics of a specific type (batting/bowling) across multiple records.
+   * 
+   * @param {Array} records - The records to aggregate.
+   * @param {string} statType - The type of statistics ('batting' or 'bowling').
+   * @returns {Object} Aggregated stats object.
+   */
   const aggregateStats = (records, statType) => {
     const agg = {};
     records.forEach((r) => {
@@ -55,6 +92,12 @@ function PlayerDetailPage({ theme, toggleTheme }) {
     return agg;
   };
 
+  /**
+   * Calculates grand totals for major career metrics.
+   * 
+   * @param {Array} career - The player's career records.
+   * @returns {Object|null} Object containing totalMatches, totalRuns, totalWickets, totalInnings.
+   */
   const getCareerTotals = (career) => {
     if (!career || career.length === 0) return null;
     let totalMatches = 0;

@@ -1,3 +1,12 @@
+/**
+ * index.js - React Application Entry point
+ * 
+ * Registers the root React component, applies global styles,
+ * and initializes React's root API for the Cricket Player Directory application.
+ * 
+ * @package CricketPlayerDirectory
+ */
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';

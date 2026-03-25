@@ -1,3 +1,12 @@
+/**
+ * eslint.config.mjs - ESLint Configuration
+ * 
+ * Configures ESLint with React and Prettier plugins, defining global variables
+ * and linting rules for the codebase.
+ * 
+ * @package CricketPlayerDirectory
+ */
+
 import js from '@eslint/js';
 import globals from 'globals';
 import pluginReact from 'eslint-plugin-react';
