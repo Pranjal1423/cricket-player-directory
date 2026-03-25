@@ -1,3 +1,17 @@
+/**
+ * api.js - Data Service for Cricket Player Directory
+ * 
+ * Handles all API communication with the Sportmonks Cricket API.
+ * Implements a multi-layered caching strategy using:
+ * 1. In-memory caching (fastest, per-session)
+ * 2. IndexedDB (persistent across browser refreshes)
+ * 3. Network fetching (final fallback)
+ * 
+ * Also provides data pruning logic to keep the application state lightweight.
+ * 
+ * @package CricketPlayerDirectory
+ */
+
 const API_KEY = process.env.REACT_APP_SPORTMONKS_KEY;
 const BASE_URL = '/api/v2.0';
 
@@ -13,6 +27,11 @@ const playerCache = {};
 
 // ── IndexedDB helpers ──────────────────────────────────────────────────────
 
+/**
+ * Opens a connection to the IndexedDB database.
+ * 
+ * @returns {Promise<IDBDatabase>} A promise that resolves to the database instance.
+ */
 const openDB = () =>
   new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -23,6 +42,12 @@ const openDB = () =>
     request.onerror = (e) => reject(e.target.error);
   });
 
+/**
+ * Retrieves a value from IndexedDB by key.
+ * 
+ * @param {string} key - The key to retrieve.
+ * @returns {Promise<any|null>} The retrieved value or null if not found.
+ */
 const idbGet = async (key) => {
   try {
     const db = await openDB();
@@ -37,6 +62,13 @@ const idbGet = async (key) => {
   }
 };
 
+/**
+ * Sets a value in IndexedDB with a timestamp.
+ * 
+ * @param {string} key - The key to store.
+ * @param {any} value - The value to store.
+ * @returns {Promise<void>}
+ */
 const idbSet = async (key, value) => {
   try {
     const db = await openDB();
@@ -53,6 +85,12 @@ const idbSet = async (key, value) => {
 
 // ── Data pruning ───────────────────────────────────────────────────────────
 
+/**
+ * Prunes the career data to only include necessary fields.
+ * 
+ * @param {Array} career - The raw career data from the API.
+ * @returns {Array} The pruned career data.
+ */
 const pruneCareer = (career) => {
   if (!Array.isArray(career)) return [];
   return career.map((c) => ({
@@ -84,6 +122,12 @@ const pruneCareer = (career) => {
   }));
 };
 
+/**
+ * Prunes the player data to only include necessary fields.
+ * 
+ * @param {Object} p - The raw player object from the API.
+ * @returns {Object} The pruned player object.
+ */
 const prunePlayer = (p) => ({
   id: p.id,
   fullname: p.fullname,
@@ -105,6 +149,11 @@ const prunePlayer = (p) => ({
 
 // ── Public API ─────────────────────────────────────────────────────────────
 
+/**
+ * Fetches all players from the API with caching.
+ * 
+ * @returns {Promise<{data: Array}>} A promise that resolves to an object containing the player data.
+ */
 export const fetchPlayers = async () => {
   // 1. in-memory (fastest)
   if (playersMemoryCache) {
@@ -133,6 +182,11 @@ export const fetchPlayers = async () => {
   return { data: playersMemoryCache };
 };
 
+/**
+ * Fetches country information from the API.
+ * 
+ * @returns {Promise<Object>} A promise that resolves to a map of country IDs to names.
+ */
 export const fetchCountries = async () => {
   if (countriesCache) return countriesCache;
 
@@ -148,6 +202,12 @@ export const fetchCountries = async () => {
   return countriesCache;
 };
 
+/**
+ * Fetches details for a specific player by ID.
+ * 
+ * @param {number|string} id - The ID of the player to fetch.
+ * @returns {Promise<{data: Object}>} A promise that resolves to an object containing the player detail.
+ */
 export const fetchPlayerById = async (id) => {
   const numericId = parseInt(id);
 
