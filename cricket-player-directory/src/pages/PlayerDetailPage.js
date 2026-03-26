@@ -85,10 +85,43 @@ function PlayerDetailPage({ theme, toggleTheme }) {
       if (!stats) return;
       Object.keys(stats).forEach((key) => {
         if (typeof stats[key] === 'number') {
+          // skip derived fields — recalculate below
+          if (['average', 'strike_rate', 'economy_rate'].includes(key)) return;
           agg[key] = (agg[key] || 0) + stats[key];
         }
       });
     });
+
+    // recalculate batting average: runs / (innings - not_outs)
+    if (statType === 'batting') {
+      const dismissals = (agg.innings || 0) - (agg.not_outs || 0);
+      agg.average = dismissals > 0
+        ? parseFloat((agg.runs_scored / dismissals).toFixed(2))
+        : agg.runs_scored || 0;
+
+      // recalculate batting strike rate: (runs / balls_faced) * 100
+      agg.strike_rate = agg.balls_faced > 0
+        ? parseFloat(((agg.runs_scored / agg.balls_faced) * 100).toFixed(2))
+        : null;
+    }
+
+    // recalculate bowling average: runs_conceded / wickets
+    if (statType === 'bowling') {
+      agg.average = agg.wickets > 0
+        ? parseFloat((agg.runs_conceded / agg.wickets).toFixed(2))
+        : null;
+
+      // recalculate economy: (runs_conceded / overs)
+      agg.economy_rate = agg.overs > 0
+        ? parseFloat((agg.runs_conceded / agg.overs).toFixed(2))
+        : null;
+
+      // recalculate bowling strike rate: balls / wickets
+      agg.strike_rate = agg.wickets > 0
+        ? parseFloat((agg.balls / agg.wickets).toFixed(2))
+        : null;
+    }
+
     return agg;
   };
 
