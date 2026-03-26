@@ -29,21 +29,30 @@ function PlayerDetailPage({ theme, toggleTheme }) {
   const [activeTab, setActiveTab] = useState(null);
 
   useEffect(() => {
+    let mounted = true;
+
     const loadPlayer = async () => {
       try {
         setLoading(true);
         const data = await fetchPlayerById(id);
+        if (!mounted) return;
         setPlayer(data.data);
         if (data.data.career && data.data.career.length > 0) {
           setActiveTab(data.data.career[0].type);
         }
       } catch (err) {
+        if (!mounted) return;
         setError(err.message);
       } finally {
+        if (!mounted) return;
         setLoading(false);
       }
     };
+
     loadPlayer();
+    return () => {
+      mounted = false;
+    };
   }, [id]);
 
   /**

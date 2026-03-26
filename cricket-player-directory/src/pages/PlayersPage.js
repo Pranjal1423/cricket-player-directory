@@ -42,6 +42,8 @@ function PlayersPage({ theme, toggleTheme }) {
   const debouncedSearch = useDebounce(search, 300);
 
   useEffect(() => {
+    let mounted = true;
+
     const loadData = async () => {
       try {
         setLoading(true);
@@ -49,15 +51,22 @@ function PlayersPage({ theme, toggleTheme }) {
           fetchPlayers(),
           fetchCountries(),
         ]);
+        if (!mounted) return;
         setPlayers(playersData.data);
         setCountries(countriesData);
       } catch (err) {
+        if (!mounted) return;
         setError(err.message);
       } finally {
+        if (!mounted) return;
         setLoading(false);
       }
     };
+
     loadData();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const uniqueCountries = useMemo(() => {
