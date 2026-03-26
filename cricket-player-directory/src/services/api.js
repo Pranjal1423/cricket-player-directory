@@ -12,8 +12,7 @@
  * @package CricketPlayerDirectory
  */
 
-const API_KEY = process.env.REACT_APP_SPORTMONKS_KEY;
-const BASE_URL = '/api/v2.0';
+const BASE_URL = '/api';
 
 const DB_NAME = 'cricket_db';
 const DB_VERSION = 1;
@@ -167,9 +166,7 @@ export const fetchPlayers = async () => {
   }
 
   // 3. API fetch (only on first load or cache expiry)
-  const response = await fetch(
-    `${BASE_URL}/players?api_token=${API_KEY}&include=career`
-  );
+  const response = await fetch(`${BASE_URL}/players`);
   if (!response.ok) throw new Error('Failed to fetch players');
 
   const result = await response.json();
@@ -189,7 +186,7 @@ export const fetchPlayers = async () => {
 export const fetchCountries = async () => {
   if (countriesCache) return countriesCache;
 
-  const response = await fetch(`${BASE_URL}/countries?api_token=${API_KEY}`);
+  const response = await fetch(`${BASE_URL}/countries`);
   if (!response.ok) throw new Error('Failed to fetch countries');
 
   const result = await response.json();
@@ -220,9 +217,7 @@ export const fetchPlayerById = async (id) => {
     }
   }
 
-  const response = await fetch(
-    `${BASE_URL}/players/${numericId}?api_token=${API_KEY}&include=career,country`
-  );
+  const response = await fetch(`${BASE_URL}/player/${numericId}`);
   if (!response.ok) throw new Error('Failed to fetch player');
 
   const result = await response.json();
