@@ -207,6 +207,20 @@ function PlayersPage({ theme, toggleTheme }) {
     return rangeWithDots;
   };
 
+  const handlePlayerClick = (playerId) => {
+    navigate(`/player/${playerId}`);
+  };
+
+  const handlePlayerKeyDown = (e, playerId) => {
+    if (e.key === 'Enter') navigate(`/player/${playerId}`);
+  };
+
+  const handleImageError = (playerId) => {
+    setPlayers((prev) =>
+      prev.map((p) => (p.id === playerId ? { ...p, imgError: true } : p))
+    );
+  };
+
   if (loading)
     return (
       <div className="players-page">
@@ -369,12 +383,10 @@ function PlayersPage({ theme, toggleTheme }) {
               <div
                 key={player.id}
                 className="player-card"
-                onClick={() => navigate(`/player/${player.id}`)}
+                onClick={() => handlePlayerClick(player.id)}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) =>
-                  e.key === 'Enter' && navigate(`/player/${player.id}`)
-                }
+                onKeyDown={(e) => handlePlayerKeyDown(e, player.id)}
               >
                 <div className="player-image-wrap">
                   {player.image_path && !player.imgError ? (
@@ -383,13 +395,7 @@ function PlayersPage({ theme, toggleTheme }) {
                       alt={player.fullname}
                       className="player-image"
                       loading="lazy"
-                      onError={() => {
-                        setPlayers((prev) =>
-                          prev.map((p) =>
-                            p.id === player.id ? { ...p, imgError: true } : p
-                          )
-                        );
-                      }}
+                      onError={() => handleImageError(player.id)}
                     />
                   ) : (
                     <span className="player-image-placeholder">🏏</span>
