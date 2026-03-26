@@ -223,7 +223,11 @@ function PlayerDetailPage({ theme, toggleTheme }) {
         </button>
         <h1>{player.fullname}</h1>
         <div className="detail-header-right">
-          <button className="theme-toggle" onClick={toggleTheme}>
+          <button
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
         </div>

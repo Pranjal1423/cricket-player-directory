@@ -246,7 +246,11 @@ function PlayersPage({ theme, toggleTheme }) {
           <span className="players-count">
             {filteredPlayers.length} players
           </span>
-          <button className="theme-toggle" onClick={toggleTheme}>
+          <button
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
         </div>
@@ -259,11 +263,13 @@ function PlayersPage({ theme, toggleTheme }) {
           placeholder="Search by last name..."
           value={search}
           onChange={(e) => updateParam('search', e.target.value)}
+          aria-label="Search players by last name"
         />
         <select
           className="control-select"
           onChange={(e) => updateParam('country', e.target.value)}
           value={countryFilter}
+          aria-label="Filter by country"
         >
           <option value="">All Countries</option>
           {uniqueCountries.map(({ id, name }) => (
@@ -276,6 +282,7 @@ function PlayersPage({ theme, toggleTheme }) {
           className="control-select"
           onChange={(e) => updateParam('position', e.target.value)}
           value={positionFilter}
+          aria-label="Filter by position"
         >
           <option value="">All Positions</option>
           {uniquePositions.map((pos) => (
@@ -288,6 +295,7 @@ function PlayersPage({ theme, toggleTheme }) {
           className="control-select"
           onChange={(e) => updateParam('tournament', e.target.value)}
           value={tournamentFilter}
+          aria-label="Filter by tournament type"
         >
           <option value="">All Tournament Types</option>
           {uniqueTournamentTypes.map((type) => (
@@ -300,6 +308,7 @@ function PlayersPage({ theme, toggleTheme }) {
           className="control-select"
           onChange={(e) => updateParam('sortBy', e.target.value)}
           value={sortBy}
+          aria-label="Sort players by"
         >
           <option value="firstname">Sort: First Name</option>
           <option value="id">Sort: ID</option>
@@ -309,6 +318,7 @@ function PlayersPage({ theme, toggleTheme }) {
           className="control-select"
           onChange={(e) => updateParam('sortOrder', e.target.value)}
           value={sortOrder}
+          aria-label="Sort order"
         >
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
