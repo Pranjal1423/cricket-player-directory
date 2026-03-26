@@ -9,6 +9,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { fetchPlayers, fetchCountries } from '../services/api';
 import useDebounce from '../hooks/useDebounce';
 import './PlayersPage.css';
@@ -438,5 +439,10 @@ function PlayersPage({ theme, toggleTheme }) {
     </div>
   );
 }
+
+PlayersPage.propTypes = {
+  theme: PropTypes.string.isRequired,
+  toggleTheme: PropTypes.func.isRequired,
+};
 
 export default PlayersPage;

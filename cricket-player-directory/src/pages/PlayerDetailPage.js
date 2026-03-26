@@ -9,6 +9,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { fetchPlayerById } from '../services/api';
 import './PlayerDetailPage.css';
 
@@ -410,5 +411,10 @@ function PlayerDetailPage({ theme, toggleTheme }) {
     </div>
   );
 }
+
+PlayerDetailPage.propTypes = {
+  theme: PropTypes.string.isRequired,
+  toggleTheme: PropTypes.func.isRequired,
+};
 
 export default PlayerDetailPage;
