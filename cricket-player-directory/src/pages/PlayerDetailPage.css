@@ -283,6 +283,10 @@
   margin-bottom: 12px;
 }
 
+.stats-section-title.bowling {
+  margin-top: 24px;
+}
+
 .stats-table {
   width: 100%;
   border-collapse: collapse;

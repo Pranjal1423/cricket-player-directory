@@ -269,7 +269,7 @@ function PlayerDetailPage({ theme, toggleTheme }) {
             <div className="detail-hero-info-row">
               <span className="detail-hero-info-label">Gender</span>
               <span className="detail-hero-info-value">
-                {player.gender === 'm' ? 'Male' : 'Female'}
+                {player.gender === 'm' ? 'Male' : player.gender === 'f' ? 'Female' : 'N/A'}
               </span>
             </div>
             {player.country && (
@@ -354,10 +354,7 @@ function PlayerDetailPage({ theme, toggleTheme }) {
 
               {Object.keys(bowlingStats).length > 0 && (
                 <>
-                  <p
-                    className="stats-section-title"
-                    style={{ marginTop: '24px' }}
-                  >
+                  <p className="stats-section-title bowling">
                     Bowling
                   </p>
                   <table className="stats-table">
