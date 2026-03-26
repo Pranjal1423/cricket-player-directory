@@ -60,11 +60,7 @@ function PlayersPage({ theme, toggleTheme }) {
   }, []);
 
   useEffect(() => {
-    let mounted = true;
     loadData();
-    return () => {
-      mounted = false;
-    };
   }, [loadData]);
 
   const uniqueCountries = useMemo(() => {

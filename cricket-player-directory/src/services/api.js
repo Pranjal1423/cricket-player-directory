@@ -101,22 +101,21 @@ const pruneCareer = (career) => {
           innings: c.batting.innings,
           runs_scored: c.batting.runs_scored,
           highest_inning_score: c.batting.highest_inning_score,
-          average: c.batting.average,
-          strike_rate: c.batting.strike_rate,
           not_outs: c.batting.not_outs,
           hundreds: c.batting.hundreds,
           fifties: c.batting.fifties,
           four_x: c.batting.four_x,
           six_x: c.batting.six_x,
+          balls_faced: c.batting.balls_faced, // needed for strike rate
         }
       : null,
     bowling: c.bowling
       ? {
           matches: c.bowling.matches,
           wickets: c.bowling.wickets,
-          average: c.bowling.average,
-          economy_rate: c.bowling.economy_rate,
-          strike_rate: c.bowling.strike_rate,
+          runs: c.bowling.runs ?? c.bowling.runs_conceded, // Handle both possible names
+          overs: c.bowling.overs,
+          balls: c.bowling.balls,
         }
       : null,
   }));

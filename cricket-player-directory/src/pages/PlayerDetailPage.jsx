@@ -95,11 +95,18 @@ function PlayerDetailPage({ theme, toggleTheme }) {
       const stats = r[statType];
       if (!stats) return;
       Object.keys(stats).forEach((key) => {
-        if (typeof stats[key] === 'number') {
-          // skip derived fields — recalculate below
-          if (['average', 'strike_rate', 'economy_rate'].includes(key)) return;
-          agg[key] = (agg[key] || 0) + stats[key];
+        // Skip derived fields — they will be recalculated below
+        if (['average', 'strike_rate', 'economy_rate'].includes(key)) return;
+
+        const val = parseFloat(stats[key]);
+        if (isNaN(val)) return;
+
+        if (key === 'highest_inning_score') {
+          agg[key] = Math.max(agg[key] || 0, val);
+          return;
         }
+
+        agg[key] = (agg[key] || 0) + val;
       });
     });
 
@@ -118,18 +125,23 @@ function PlayerDetailPage({ theme, toggleTheme }) {
 
     // recalculate bowling average: runs_conceded / wickets
     if (statType === 'bowling') {
-      agg.average = agg.wickets > 0
-        ? parseFloat((agg.runs_conceded / agg.wickets).toFixed(2))
+      const runs = agg.runs || agg.runs_conceded || 0;
+      const overs = agg.overs || 0;
+      const balls = agg.balls || (overs * 6.0);
+      const wickets = agg.wickets || 0;
+
+      agg.average = wickets > 0
+        ? parseFloat((runs / wickets).toFixed(2))
         : null;
 
       // recalculate economy: (runs_conceded / overs)
-      agg.economy_rate = agg.overs > 0
-        ? parseFloat((agg.runs_conceded / agg.overs).toFixed(2))
+      agg.economy_rate = overs > 0
+        ? parseFloat((runs / overs).toFixed(2))
         : null;
 
       // recalculate bowling strike rate: balls / wickets
-      agg.strike_rate = agg.wickets > 0
-        ? parseFloat((agg.balls / agg.wickets).toFixed(2))
+      agg.strike_rate = wickets > 0
+        ? parseFloat((balls / wickets).toFixed(2))
         : null;
     }
 
@@ -353,9 +365,9 @@ function PlayerDetailPage({ theme, toggleTheme }) {
                           <tr key={key}>
                             <td>{label}</td>
                             <td>
-                              {decimals
+                              {decimals && typeof battingStats[key] === 'number'
                                 ? battingStats[key].toFixed(decimals)
-                                : battingStats[key]}
+                                : (battingStats[key] ?? 'N/A')}
                             </td>
                           </tr>
                         ) : null
@@ -383,9 +395,9 @@ function PlayerDetailPage({ theme, toggleTheme }) {
                           <tr key={key}>
                             <td>{label}</td>
                             <td>
-                              {decimals
+                              {decimals && typeof bowlingStats[key] === 'number'
                                 ? bowlingStats[key].toFixed(decimals)
-                                : bowlingStats[key]}
+                                : (bowlingStats[key] ?? 'N/A')}
                             </td>
                           </tr>
                         ) : null
