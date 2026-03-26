@@ -7,7 +7,7 @@
  * @package CricketPlayerDirectory
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { fetchPlayers, fetchCountries } from '../services/api';
 import useDebounce from '../hooks/useDebounce';
@@ -41,33 +41,30 @@ function PlayersPage({ theme, toggleTheme }) {
 
   const debouncedSearch = useDebounce(search, 300);
 
+  const loadData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [playersData, countriesData] = await Promise.all([
+        fetchPlayers(),
+        fetchCountries(),
+      ]);
+      setPlayers(playersData.data);
+      setCountries(countriesData);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     let mounted = true;
-
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const [playersData, countriesData] = await Promise.all([
-          fetchPlayers(),
-          fetchCountries(),
-        ]);
-        if (!mounted) return;
-        setPlayers(playersData.data);
-        setCountries(countriesData);
-      } catch (err) {
-        if (!mounted) return;
-        setError(err.message);
-      } finally {
-        if (!mounted) return;
-        setLoading(false);
-      }
-    };
-
     loadData();
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [loadData]);
 
   const uniqueCountries = useMemo(() => {
     const ids = [...new Set(players.map((p) => p.country_id))].filter(Boolean);
@@ -235,7 +232,7 @@ function PlayersPage({ theme, toggleTheme }) {
     return (
       <div className="error">
         <p>Something went wrong: {error}</p>
-        <button onClick={() => window.location.reload()}>Try Again</button>
+        <button onClick={loadData}>Try Again</button>
       </div>
     );
 
