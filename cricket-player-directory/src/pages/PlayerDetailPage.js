@@ -27,6 +27,7 @@ function PlayerDetailPage({ theme, toggleTheme }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -229,14 +230,12 @@ function PlayerDetailPage({ theme, toggleTheme }) {
 
       <div className="detail-hero">
         <div className="detail-hero-bg" />
-        {player.image_path && (
+        {player.image_path && !imageError && (
           <img
             src={player.image_path}
             alt={player.fullname}
             className="detail-hero-image"
-            onError={(e) => {
-              e.target.style.display = 'none';
-            }}
+            onError={() => setImageError(true)}
           />
         )}
         <div className="detail-hero-content">

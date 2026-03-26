@@ -366,24 +366,23 @@ function PlayersPage({ theme, toggleTheme }) {
                 }
               >
                 <div className="player-image-wrap">
-                  {player.image_path ? (
+                  {player.image_path && !player.imgError ? (
                     <img
                       src={player.image_path}
                       alt={player.fullname}
                       className="player-image"
                       loading="lazy"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
+                      onError={() => {
+                        setPlayers((prev) =>
+                          prev.map((p) =>
+                            p.id === player.id ? { ...p, imgError: true } : p
+                          )
+                        );
                       }}
                     />
-                  ) : null}
-                  <span
-                    className="player-image-placeholder"
-                    style={{ display: player.image_path ? 'none' : 'flex' }}
-                  >
-                    🏏
-                  </span>
+                  ) : (
+                    <span className="player-image-placeholder">🏏</span>
+                  )}
                 </div>
                 <div className="player-info">
                   <p className="player-name">{player.fullname}</p>
